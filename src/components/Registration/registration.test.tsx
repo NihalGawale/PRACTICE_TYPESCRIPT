@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import Registration from "./Registration";
 import userEvent from "@testing-library/user-event";
 
@@ -11,19 +11,27 @@ describe("Initial Check", () => {
   });
 
   test("Check First Name", async () => {
-    render(<Registration />);
+    act(() => {
+      render(<Registration />);
+    });
     const firstName = screen.getByLabelText("First Name") as HTMLInputElement;
     expect(firstName).toBeInTheDocument();
-    userEvent.type(firstName, "Nabc");
-    expect(firstName.value).not.toMatch(sampleRegex);
+    act(() => {
+      userEvent.type(firstName, "Nabc");
+      expect(firstName.value).not.toMatch(sampleRegex);
+    });
   });
 
   test("Check Last Name", async () => {
-    render(<Registration />);
+    act(() => {
+      render(<Registration />);
+    });
     const lastName = screen.getByLabelText("Last Name") as HTMLInputElement;
     expect(lastName).toBeInTheDocument();
-    userEvent.type(lastName, "Abcdef");
-    expect(lastName.value).not.toMatch(sampleRegex);
+    act(() => {
+      userEvent.type(lastName, "Abcdef");
+      expect(lastName.value).not.toMatch(sampleRegex);
+    });
   });
 
   test("Check Email", () => {
@@ -61,30 +69,46 @@ describe("Initial Check", () => {
     expect(gender[1]).toBeInTheDocument();
   });
 
-  test("Test Submit Button", () => {
-    render(<Registration />);
+  test("Test Submit Button", async () => {
+    const promise = Promise.resolve();
+    const handleUpdateUserData = jest.fn(() => promise);
+    act(() => {
+      render(<Registration />);
+    });
 
     const submit = screen.getByRole("button", {
       name: "Submit",
     });
     expect(submit).toBeInTheDocument();
+
+    act(() => {
+      userEvent.click(submit);
+    });
+    await act(() => promise);
   });
 
-  test("Test Reset Button", () => {
-    render(<Registration />);
+  test("Test Reset Button", async () => {
+    const promise = Promise.resolve();
+    const handleUpdateUserData = jest.fn(() => promise);
+    act(() => {
+      render(<Registration />);
+    });
 
     const reset = screen.getByRole("button", {
       name: "Reset",
     });
     expect(reset).toBeInTheDocument();
-    userEvent.click(reset);
-    expect(screen.getByLabelText("First Name")).toHaveValue("");
-    expect(screen.getByLabelText("Last Name")).toHaveValue("");
-    expect(screen.getByLabelText("Email")).toHaveValue("");
-    expect(screen.getByTestId("country")).toHaveValue("select country");
-    expect(screen.getByTestId("state")).toHaveValue("select state");
-    expect(screen.getByTestId("city")).toHaveValue("select city");
-    expect(screen.getAllByRole("radio")[0]).not.toBeChecked();
-    expect(screen.getAllByRole("radio")[1]).not.toBeChecked();
+    act(() => {
+      userEvent.click(reset);
+      expect(screen.getByLabelText("First Name")).toHaveValue("");
+      expect(screen.getByLabelText("Last Name")).toHaveValue("");
+      expect(screen.getByLabelText("Email")).toHaveValue("");
+      expect(screen.getByTestId("country")).toHaveValue("select country");
+      expect(screen.getByTestId("state")).toHaveValue("select state");
+      expect(screen.getByTestId("city")).toHaveValue("select city");
+      expect(screen.getAllByRole("radio")[0]).not.toBeChecked();
+      expect(screen.getAllByRole("radio")[1]).not.toBeChecked();
+    });
+    await act(() => promise);
   });
 });

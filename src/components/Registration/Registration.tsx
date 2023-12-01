@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import Display from "../Display/Display";
 
 type Inputs = {
@@ -45,8 +44,8 @@ const Registration = () => {
   const city = watch("city");
   const gender = watch("gender");
   const sampleRegex = /[`~@$%^\s\d*#!}[(\]{|<>-]/;
-  const handleReset = () => {
-    reset();
+  const handleReset = async () => {
+    await reset();
     setSubmit(!submit);
   };
   const [firstNameError, setFirstNameError] = useState(false);
@@ -61,6 +60,7 @@ const Registration = () => {
       setSubmit(true);
     }
   };
+
   useEffect(() => {
     if (firstName?.match(sampleRegex)) {
       setFirstNameError(true);
@@ -71,6 +71,7 @@ const Registration = () => {
       setLastNameError(false);
     }
   }, [firstName, lastName, email]);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div
@@ -102,6 +103,7 @@ const Registration = () => {
               })}
             />
           </div>
+
           {firstNameError ? (
             <p style={{ fontSize: "12px" }}>
               Special Characters,Spaces and Numbers are not allowed
@@ -128,6 +130,7 @@ const Registration = () => {
               })}
             />
           </div>
+
           {lastNameError ? (
             <p style={{ fontSize: "12px" }}>
               Special Characters,Spaces and Numbers are not allowed
@@ -135,6 +138,7 @@ const Registration = () => {
           ) : (
             ""
           )}
+
           <div
             style={{
               display: "flex",
@@ -150,6 +154,7 @@ const Registration = () => {
               {...register("email", { required: true })}
             />
           </div>
+
           {emailError ? (
             <p style={{ fontSize: "12px" }}>
               Email is not in the expected format
@@ -157,6 +162,7 @@ const Registration = () => {
           ) : (
             ""
           )}
+
           <div
             style={{
               display: "flex",
@@ -245,6 +251,7 @@ const Registration = () => {
               <label htmlFor="female">Female</label>
             </div>
           </div>
+
           <div style={{ display: "flex", justifyContent: "center" }}>
             <button
               type="submit"
@@ -260,6 +267,7 @@ const Registration = () => {
               Reset
             </button>
           </div>
+
           {submit && userData && <Display data={userData} />}
         </div>
       </div>
